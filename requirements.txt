@@ -1,0 +1,4 @@
+ultralytics
+optuna
+streamlit 
+opencv-python
