@@ -1,5 +1,6 @@
 import os 
 import yaml
+import torch
 from colorama import init, Fore, Back, Style
 init() # Initialize Colorama to work on Windows
 
@@ -22,3 +23,11 @@ class ConfigLoad():
             
 def colorize(to_print, color):
     return f"{getattr(Fore, color) + to_print + Style.RESET_ALL}"
+
+
+
+def check_cuda_availability():
+    is_or_is_not = 'is' if torch.cuda.is_available() else 'is not'
+    symbol = '✔' if torch.cuda.is_available() else 'X'
+     
+    print(f"{symbol*2} --- Cuda {is_or_is_not} available on your machine. --- {symbol*2}")

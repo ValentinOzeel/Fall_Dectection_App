@@ -1,41 +1,34 @@
-import os
 from typing import Dict, List, Tuple
-
-
-from secondary_module import project_root_path, ConfigLoad, colorize
-
 from ultralytics import YOLO
-
-
-
-yolo_dataset_config = os.path.join(project_root_path, 'conf', 'YOLO_dataset.yaml') 
-config_path = os.path.join(project_root_path, 'conf', 'config.yaml')        
-config_load = ConfigLoad(path=config_path)
-config = config_load.get_config()
-
-
-
-
-yolo_model_name = config['YOLO']['MODEL']
-parameters = config['YOLO']['PARAMS']
-
-
 
 
              
 class YOLOFinetuning:
-    def __init__(self, model_name:str, yolo_dataset_path:str):
+    def __init__(self, model_name:str, yolo_dataset_path:str, 
+                 train_parameters:Dict=None, val_parameters:Dict=None, predict_parameters:Dict=None):
         self.model = YOLO(model_name)
         self.yolo_dataset_path = yolo_dataset_path
         
         self.training_results = None
         self.val_results = None
         
-    def train(self, parameters:Dict):
+        self.train_parameters = train_parameters 
+        self.val_parameters = val_parameters 
+        self.predict_parameters = predict_parameters
+        
+    def train(self, parameters:Dict=None):
+        parameters = self.train_parameters if self.train_parameters else parameters
         self.training_results = self.model.train(data=self.yolo_dataset_path, **parameters)
         
-    def evaluate(self):
-        self.val_results = self.model.val()
+    def evaluate(self, parameters:Dict=None):
+        parameters = self.train_parameters if self.train_parameters else parameters
+        self.val_results = self.model.val(data=self.yolo_dataset_path, **parameters)
+        
+    def inference(self, frame, parameters:Dict, stream=False):
+        parameters['stream'] = stream
+        return self.model.predict(source=frame, **parameters) if not stream else self.model(frame, stream=True, **parameters)
+    
+    
         
     def hyperparameters_finetuning(self, optuna_hyperparameters:List[Tuple], metric_to_optimize='mAP_0.5', direction='maximize', n_trials=50):
         optuna = OptunaYoloHyperparamsFinetuning(self.yolo_dataset_path, self.model, optuna_hyperparameters)
@@ -45,18 +38,8 @@ class YOLOFinetuning:
                                                                                                     n_trials=n_trials)
         return best_params, self.model, self.training_results, self.val_results
 
-            
-    def SAVE MODEL 
-     
-     
-     
-     
-     
-     
 
-
-
-
+     
                    
     
 class OptunaYoloHyperparamsFinetuning:
@@ -79,12 +62,16 @@ class OptunaYoloHyperparamsFinetuning:
         
     def _objective(self, trial):
         self.trials_counter += 1
+        
+        start_time = timer()
         # Set hyperparameters and train model
         self.model.train(data=self.dataset_path, **self._set_trial_params(trial))
+        end_time = timer()
+        training_time = f"{(end_time-start_time):.4f}"
         # Validate the model
         results = self.model.val(data=self.dataset_path)
         # Return the evaluation metric (e.g., mAP) for Optuna to optimize
-        return results[f'metrics/{self.metric_to_optimize}']  # Adjust based on the actual result keys
+        return results[f'metrics/{self.metric_to_optimize}'], training_time  # Adjust based on the actual result keys
     
     def _retrain_and_validate_model_best_params(self, best_params:Dict):
         # Set best hyperparameters and train model
@@ -92,7 +79,7 @@ class OptunaYoloHyperparamsFinetuning:
         val_results =  self.model.val(data=self.dataset_path)
         return train_results, val_results
         
-    def optuna_finetuning(self, metric_to_optimize='mAP_0.5', direction='maximize', n_trials=50, custom_objective = None):
+    def optuna_finetuning(self, metric_to_optimize='mAP_0.5', direction=['maximize', 'minimize'], n_trials=50, custom_objective = None):
         self.metric_to_optimize = metric_to_optimize
         objective = self._objective if custom_objective is None else custom_objective
         # Create a study and optimize the objective function

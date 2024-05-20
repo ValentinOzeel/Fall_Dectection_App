@@ -1,26 +1,10 @@
+import os
 import streamlit as st
 import cv2
 import tempfile
-from ultralytics import YOLO
 import numpy as np
 
 
-if __name__ == "__main__":
-    # Load your trained YOLOv8 model
-    model_path = 'path/to/your/fine-tuned-model.pt'
-    model = YOLO(model_path)
-    
-    # Initialize and run the FallDetectApp
-    FallDetectApp(model)
-
-save the filke and run ---- streamlit run app.py ----
-MODEL =
-
-USE OUR YOLO CLASS FOR THE PREDICTION (WE PASS OUR PARAMS)
-
-
-
-app = FallDetectApp(model)
 
 class FallDetectApp():
     def __init__(self, model, fall_label=0, stream_detection_confidence=75, stream_frame_threshold=5):
@@ -69,8 +53,9 @@ class FallDetectApp():
             self._action_following_detection()
     
     def _action_following_detection(self):
-        self.stream_fall_frame_counter
-        CALL / SEND MSG / MAIL ?
+        if self.stream_fall_frame_counter > self.stream_detection_confidence:
+            print('DO YOUR ACTION')
+       # CALL / SEND MSG / MAIL ?
         
 
         

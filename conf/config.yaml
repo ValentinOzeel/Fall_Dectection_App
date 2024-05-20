@@ -1,52 +1,70 @@
 YOLO:
-  MODEL: YOLOv8m
-  PARAMS:
-    epochs: 500,
-    batch_size: 16,
-    imgsz: 336,
-    lr0: 0.01,
-    lrf: 0.000001,
-    optimizer: Adam,
-    dropout: 0.2,
-    patience: 25,
-    freeze: 0,
-    cls: 0.5,
-    momentum: 0.93,
-    weight_decay: 0.0005,
-    warmup_epochs: 1,
-    plots: True,
-    seed: 0,
-    device: 0,
-    save_period: 5,  # Save checkpoints every 5 epochs
-    project: results  # Directory to save checkpoints
+  MODEL: yolov8n.pt #yolov8m.pt
+  TRAIN_PARAMS:
 
+    verbose: True
+    workers: 8
+    epochs: 300
+    batch: 8
+    imgsz: 320
+    lr0: 0.002
+    lrf: 0.000001
+    optimizer: Adam
+    dropout: 0.2
+    patience: 25
+#    freeze: 0
+    cls: 0.5
+    momentum: 0.93
+    weight_decay: 0.0005
+    warmup_epochs: 1
+    val: True
+    plots: True
+    seed: 0
+    device: 0
+    save_period: 5  # Save checkpoints every 5 epochs
+    save_dir: "runs\\detect"  # Directory to save checkpoints
 
-## For optuna (LIST)
-optuna_hyperparameters : [
-    ###### Model's hyperparameter tuning
-    ### Test different batch sizes to see which one maximizes GPU utilization and provides stable training.
-    ['batch', 'suggest_int', (8, 32)],
-    ### Experiment with different image sizes to balance accuracy and computational efficiency.
-    ['imgsz', 'suggest_int', (224, 640)],
-    ### Use a log-uniform distribution to explore a wide range of learning rates.
-    ['lr0', 'suggest_loguniform', (1e-6, 1e-2)],
-    ### Use a log-uniform distribution to explore a wide range of final learning rates.
-    ['lrf', 'suggest_loguniform', (1e-8, 1e-2)],
-    ### Evaluate different optimizers to find the best one for your specific task and dataset.
-    ['optimizer', 'suggest_categorical', ('SGD', 'Adam', 'AdamW', 'RMSProp')],
-    ### Test different dropout rates to improve generalization and prevent overfitting.
-    ['dropout', 'suggest_uniform', (0.0, 0.5)],
-    ### Determine the patience for early stopping to avoid unnecessary training once performance plateaus.
-    ['patience', 'suggest_int', (5, 50)],   
-    ### Adjust the number of frozen layers to benefit from pretrained weights while allowing fine-tuning.
-    ['freeze', 'suggest_int', (0, 10)],
-    ### Weight of the classification loss in the total loss function, affecting the importance of correct class prediction relative to other components.
-    ['cls', 'suggest_uniform', (0.5, 7.5)],
-    ### Fine-tune momentum to help with faster convergence.
-    ['momentum', 'suggest_uniform', (0.65, 0.95)],
-    ### Use log-uniform to penalize large weights and prevent overfitting.
-    ['weight_decay', 'suggest_loguniform', (1e-6, 1e-3)],
-    ### Adjust the warmup period to stabilize training in the initial epochs.
-    ['warmup_epochs', 'suggest_int', (1, 10)],
+  VAL_PARAMS:
+#  batch: 16
+#  imgsz: 320
+ #   conf: 0.1
+ #   save_json: True
+ #   plots: True
+    device: 0
 
-]
+  PREDICT_PARAMS: 
+    imgsz: 320
+    conf: 0.1
+    vid_stride: 1
+    device: 0
+
+#      
+#  ## For optuna (LIST)
+#  OPTUNA_PARAMS : [
+#      ###### Model's hyperparameter tuning
+#      ### Test different batch sizes to see which one maximizes GPU utilization and provides stable training.
+#      ['batch', 'suggest_int', (8, 32)],
+#      ### Experiment with different image sizes to balance accuracy and computational efficiency.
+#      ['imgsz', 'suggest_int', (224, 640)],
+#      ### Use a log-uniform distribution to explore a wide range of learning rates.
+#      ['lr0', 'suggest_loguniform', (1e-6, 1e-2)],
+#      ### Use a log-uniform distribution to explore a wide range of final learning rates.
+#      ['lrf', 'suggest_loguniform', (1e-8, 1e-2)],
+#      ### Evaluate different optimizers to find the best one for your specific task and dataset.
+#      ['optimizer', 'suggest_categorical', ('SGD', 'Adam', 'AdamW', 'RMSProp')],
+#      ### Test different dropout rates to improve generalization and prevent overfitting.
+#      ['dropout', 'suggest_uniform', (0.0, 0.5)],
+#      ### Determine the patience for early stopping to avoid unnecessary training once performance plateaus.
+#      ['patience', 'suggest_int', (5, 50)],   
+#      ### Adjust the number of frozen layers to benefit from pretrained weights while allowing fine-tuning.
+#      ['freeze', 'suggest_int', (0, 10)],
+#      ### Weight of the classification loss in the total loss function, affecting the importance of correct class prediction relative to other components.
+#      ['cls', 'suggest_uniform', (0.5, 7.5)],
+#      ### Fine-tune momentum to help with faster convergence.
+#      ['momentum', 'suggest_uniform', (0.65, 0.95)],
+#      ### Use log-uniform to penalize large weights and prevent overfitting.
+#      ['weight_decay', 'suggest_loguniform', (1e-6, 1e-3)],
+#      ### Adjust the warmup period to stabilize training in the initial epochs.
+#      ['warmup_epochs', 'suggest_int', (1, 10)],
+#
+#  ]
