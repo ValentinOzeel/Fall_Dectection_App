@@ -21,18 +21,20 @@ if __name__ == "__main__":
     val_parameters = config['YOLO']['VAL_PARAMS']
     predict_parameters = config['YOLO']['PREDICT_PARAMS']
 
+    optuna_hyperparameters = config['YOLO']['OPTUNA_PARAMS']
+    frozen_hyperparameters = config['YOLO']['OPTUNA_FROZEN_PARAMS']
 
-
-    import torch
-    x = torch.tensor([1.0, 2.0, 3.0]).cuda()
-    print(x)
     
     
     yolo_ft = YOLOFinetuning(yolo_model, yolo_dataset_config_path, 
                              train_parameters=train_parameters, val_parameters=val_parameters, predict_parameters=predict_parameters)
 
-    yolo_ft.train()
+   # yolo_ft.train()
+    
+    # optimize mAP50: Focuses on detection ability with lenient localization requirements., mAP50-95: Provides a comprehensive evaluation across a range of detection and localization strictness levels. and training time
+    best_trials = yolo_ft.hyperparameters_finetuning(optuna_hyperparameters, frozen_hyperparameters=frozen_hyperparameters, n_trials=30)
 
+    
     
     
 #    
