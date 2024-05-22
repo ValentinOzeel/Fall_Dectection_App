@@ -4,7 +4,7 @@ from typing import Dict, List, Tuple
 
 from secondary_module import project_root_path, ConfigLoad, colorize, check_cuda_availability
 
-from yolo import YOLOFinetuning, OptunaYoloHyperparamsFinetuning
+from yolo import YOLOFinetuning
 
 
 if __name__ == "__main__":
@@ -32,7 +32,7 @@ if __name__ == "__main__":
    # yolo_ft.train()
     
     # optimize mAP50: Focuses on detection ability with lenient localization requirements., mAP50-95: Provides a comprehensive evaluation across a range of detection and localization strictness levels. and training time
-    best_trials = yolo_ft.hyperparameters_finetuning(optuna_hyperparameters, frozen_hyperparameters=frozen_hyperparameters, n_trials=30)
+    best_trials = yolo_ft.hyperparameters_finetuning('test', optuna_hyperparameters, frozen_hyperparameters=frozen_hyperparameters, n_trials=200)
 
     
     

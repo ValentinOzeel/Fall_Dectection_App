@@ -42,41 +42,46 @@ YOLO:
   OPTUNA_PARAMS:  
       ###### Model's hyperparameter tuning
       ### Test different batch sizes to see which one maximizes GPU utilization and provides stable training.
-    - ['batch', 'suggest_int', [1, 8]]
+  #  - ['batch', 'suggest_int', [4, 8]]
       ### Experiment with different image sizes to balance accuracy and computational efficiency.
-    - ['imgsz', 'suggest_int', [224, 640]]
+  #  - ['imgsz', 'suggest_int', [500, 800]]
       ### Use a log-uniform distribution to explore a wide range of learning rates.
-    - ['lr0', 'suggest_loguniform', [0.0000001, 0.1]]
+    - ['lr0', 'suggest_loguniform', [0.0001, 0.01]]
       ### Use a log-uniform distribution to explore a wide range of final learning rates.
-    - ['lrf', 'suggest_loguniform', [0.00000000001, 0.0001]]
+  #  - ['lrf', 'suggest_loguniform', [0.0000001, 0.001]]
       ### Evaluate different optimizers to find the best one for your specific task and dataset.
     - ['optimizer', 'suggest_categorical', ['Adam', 'AdamW', 'NAdam', 'RAdam', 'RMSProp', 'SGD']]
       ### Test different dropout rates to improve generalization and prevent overfitting.
-    - ['dropout', 'suggest_uniform', [0.0, 0.5]]
+ #   - ['dropout', 'suggest_uniform', [0.0, 0.5]]
       ### Determine the patience for early stopping to avoid unnecessary training once performance plateaus.
-    - ['patience', 'suggest_int', [5, 20]]
+ #   - ['patience', 'suggest_int', [5, 20]]
       ### Adjust the number of frozen layers to benefit from pretrained weights while allowing fine-tuning.
     - ['freeze', 'suggest_int', [0, 20]]
       ### Weight of the box loss component in the loss function, influencing how much emphasis is placed on accurately predicting bounding box coordinates.
-    - ['box', 'suggest_uniform', [7.5, 15]]
+ #   - ['box', 'suggest_uniform', [7.5, 15]]
       ### Weight of the classification loss in the total loss function, affecting the importance of correct class prediction relative to other components.
-    - ['cls', 'suggest_uniform', [0.5, 7.5]]
+#    - ['cls', 'suggest_uniform', [0.5, 7.5]]
       ### Fine-tune momentum to help with faster convergence.
-    - ['momentum', 'suggest_uniform', [0.65, 0.95]]
+    - ['momentum', 'suggest_uniform', [0.75, 0.95]]
       ### Use log-uniform to penalize large weights and prevent overfitting.
-    - ['weight_decay', 'suggest_loguniform', [0.000001, 0.001]]
+#    - ['weight_decay', 'suggest_loguniform', [0.000001, 0.001]]
       ### Adjust the warmup period to stabilize training in the initial epochs.
-    - ['warmup_epochs', 'suggest_int', [1, 10]]
+#    - ['warmup_epochs', 'suggest_int', [1, 10]]
 
   OPTUNA_FROZEN_PARAMS:
- #   verbose: True
- #   batch: 64
- #   patience: 1
+    verbose: False
+    epochs: 1
+    batch: 8
+    imgsz: 640
+    patience: 5
     workers: 1
-    epochs: 60
+
     val: True
     plots: True
     seed: 0
     device: 0
     save_period: 0  # Save checkpoints every 5 epochs
-    project: "runs\\optuna\\detect"  # Directory to save checkpoints
+    project: "runs\\detect\\optuna"  # Directory to save checkpoints
+
+
+  
