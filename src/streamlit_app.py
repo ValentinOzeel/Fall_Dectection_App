@@ -3,11 +3,11 @@ import streamlit as st
 import cv2
 import tempfile
 import numpy as np
-
+from pytube import YouTube
 
 
 class FallDetectApp():
-    def __init__(self, model, fall_label=0, stream_detection_confidence=75, stream_frame_threshold=5):
+    def __init__(self, model, fall_label=0, stream_detection_confidence=60, stream_frame_threshold=5):
         self.model = model
         self.fall_label = fall_label
         
@@ -21,7 +21,7 @@ class FallDetectApp():
         self.input_source = st.radio("Select input source:", ('image', 'image_URL', 'video', 'YouTube', 'stream', 'multi_stream')).lower()
         self._ask_inputs()
         
-    def _ask_input(self):
+    def _ask_inputs(self):
         if self.input_source == 'image':
             uploaded_image = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
             self.image_input(uploaded_image)
@@ -58,29 +58,31 @@ class FallDetectApp():
        # CALL / SEND MSG / MAIL ?
         
 
-        
+
     def _detection(self, frame, stream=False):
         # Perform inference on the frame
         results = self._inference(frame, stream)
-        
+
         # Draw bounding boxes on the frame
         for result in results:
             initial_frame_to_modify = result.orig_img
-            
+
             for xyxy in result.boxes.xyxy:
-                x1, y1, x2, y2 = map(int, xyxy)
-                confidence = result.boxes.conf
-                cls = result.boxes.cls
-                
+                x1, y1, x2, y2 = map(int, xyxy.tolist())
+                confidence = result.boxes.conf[0].item()
+                cls = result.boxes.cls[0].item()
+
                 if cls == self.fall_label:  
                     label = f'Fall_detected {confidence:.2f}'
                     cv2.rectangle(initial_frame_to_modify, (x1, y1), (x2, y2), (0, 0, 255), 2)
                     cv2.putText(initial_frame_to_modify, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
-                
+
                 if stream:
                     self._stream_detection(cls, confidence)
-                        
+
         return initial_frame_to_modify
+
+
 
     def stream_input(self, video_stream_url):
         # Real-time fall detection from the provided video stream URL

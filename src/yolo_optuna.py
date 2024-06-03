@@ -8,13 +8,13 @@ from secondary_module import colorize
         
 
 class OptunaYoloHyperparamsFinetuning:
-    def __init__(self, experiment_name, dataset_path, model_name, optuna_hyperparameters: List[Tuple], frozen_hyperparameters: Dict = None, project:str="runs\\detect\\optuna"):
+    def __init__(self, project_root, experiment_name, dataset_path, model_name, optuna_hyperparameters: List[Tuple], frozen_hyperparameters: Dict = None):
+        self.project_root = project_root
         self.experiment_name = experiment_name
         self.dataset_path = dataset_path
         self.model_name = model_name
         self.optuna_hyperparameters = optuna_hyperparameters
         self.frozen_hyperparameters = frozen_hyperparameters
-        self.project = project
         self.trials_counter = 0
         
     def _set_trial_params(self, trial) -> Dict:
@@ -30,8 +30,8 @@ class OptunaYoloHyperparamsFinetuning:
             for key, value in self.frozen_hyperparameters.items():
                 optuna_parameters[key] = value
                 
-        optuna_parameters['project'] = os.path.join(self.project, self.experiment_name)
-    
+        optuna_parameters['project'] = ''.join([optuna_parameters['project'], '/', self.experiment_name])
+
         return optuna_parameters
         
     def _objective(self, trial):

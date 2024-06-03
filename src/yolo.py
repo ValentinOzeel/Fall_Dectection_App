@@ -2,10 +2,12 @@ from typing import Dict, List, Tuple
 from ultralytics import YOLO
 from yolo_optuna import OptunaYoloHyperparamsFinetuning
 
+
              
 class YOLOFinetuning:
-    def __init__(self, model_name:str, yolo_dataset_path:str, 
+    def __init__(self, project_root_path:str, model_name:str, yolo_dataset_path:str, 
                  train_parameters:Dict=None, val_parameters:Dict=None, predict_parameters:Dict=None):
+        self.project_root_path = project_root_path
         self.model_name = model_name
         self.model = YOLO(model_name)
         self.yolo_dataset_path = yolo_dataset_path
@@ -35,7 +37,9 @@ class YOLOFinetuning:
                                    frozen_hyperparameters:Dict=None,
                                    metric_to_optimize=['map50', 'map'], directions=['maximize', 'maximize'], 
                                    n_trials=50):
-        optuna = OptunaYoloHyperparamsFinetuning(experiment_name, self.yolo_dataset_path, self.model_name, optuna_hyperparameters, frozen_hyperparameters=frozen_hyperparameters)
+        optuna = OptunaYoloHyperparamsFinetuning(self.project_root_path, experiment_name, self.yolo_dataset_path, 
+                                                 self.model_name, 
+                                                 optuna_hyperparameters, frozen_hyperparameters=frozen_hyperparameters)
         
         self.best_trials = optuna.optuna_finetuning(metric_to_optimize=metric_to_optimize, 
                                                directions=directions, 

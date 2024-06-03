@@ -1,60 +1,41 @@
 import os
 from typing import Dict, List, Tuple
 
-
+from ultralytics import YOLO
 from secondary_module import project_root_path, ConfigLoad, colorize, check_cuda_availability
-
 from yolo import YOLOFinetuning
-
+from streamlit_app import FallDetectApp
 
 if __name__ == "__main__":
     
     check_cuda_availability()
     
-    yolo_dataset_config_path = os.path.join(project_root_path, 'conf', 'YOLO_dataset.yaml') 
-    config_path = os.path.join(project_root_path, 'conf', 'config.yaml')        
-    config_load = ConfigLoad(path=config_path)
-    config = config_load.get_config()
-
-    yolo_model = config['YOLO']['MODEL']
-    train_parameters = config['YOLO']['TRAIN_PARAMS']
-    val_parameters = config['YOLO']['VAL_PARAMS']
-    predict_parameters = config['YOLO']['PREDICT_PARAMS']
-
-    optuna_hyperparameters = config['YOLO']['OPTUNA_PARAMS']
-    frozen_hyperparameters = config['YOLO']['OPTUNA_FROZEN_PARAMS']
-
-    
-    
-    yolo_ft = YOLOFinetuning(yolo_model, yolo_dataset_config_path, 
-                             train_parameters=train_parameters, val_parameters=val_parameters, predict_parameters=predict_parameters)
-
-   # yolo_ft.train()
+ #   yolo_dataset_config_path = os.path.join(project_root_path, 'conf', 'YOLO_dataset.yaml') 
+ #   config_path = os.path.join(project_root_path, 'conf', 'config.yaml')        
+ #   config_load = ConfigLoad(path=config_path)
+ #   config = config_load.get_config()
+#
+ #   yolo_model = config['YOLO']['MODEL']
+ #   train_parameters = config['YOLO']['TRAIN_PARAMS']
+ #   val_parameters = config['YOLO']['VAL_PARAMS']
+ #   predict_parameters = config['YOLO']['PREDICT_PARAMS']
+#
+ #   optuna_hyperparameters = config['YOLO']['OPTUNA_PARAMS']
+ #   frozen_hyperparameters = config['YOLO']['OPTUNA_FROZEN_PARAMS']
+#
+ #   
+ #   
+ #   yolo_ft = YOLOFinetuning(project_root_path, yolo_model, yolo_dataset_config_path, 
+ #                            train_parameters=train_parameters, val_parameters=val_parameters, predict_parameters=predict_parameters)
+#
+ #   yolo_ft.train()
     
     # optimize mAP50: Focuses on detection ability with lenient localization requirements., mAP50-95: Provides a comprehensive evaluation across a range of detection and localization strictness levels. and training time
-    best_trials = yolo_ft.hyperparameters_finetuning('test', optuna_hyperparameters, frozen_hyperparameters=frozen_hyperparameters, n_trials=200)
+  #  best_trials = yolo_ft.hyperparameters_finetuning('batch-4_100epoch', optuna_hyperparameters, frozen_hyperparameters=frozen_hyperparameters, n_trials=5)
 
     
-    
-    
 #    
-#    
-#    # Load your trained YOLOv8 model
-#    model_path = 'path/to/your/fine-tuned-model.pt'
-#    model = YOLO(model_path)
+    # Load your trained YOLOv8 model
+    model = YOLO(r'C:\Users\V.ozeel\Documents\Perso\Coding\Python\Projects\Fall_Detection_App\runs\detect\training\train4\weights\best.pt')
 
-#    
-#    # Initialize and run the FallDetectApp
-#    FallDetectApp(model)
-#    
-#
-#
-#save the filke and run ---- streamlit run app.py ----
-#MODEL =
-#
-#USE OUR YOLO CLASS FOR THE PREDICTION (WE PASS OUR PARAMS)
-#
-#
-#
-#
-#app = FallDetectApp(model)
+    FallDetectApp(model)
