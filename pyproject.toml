@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "Fall_Detection_App"
+version = "0.1.0"
+description = "An app for human fall detections from multiple sources including streams."
+authors = ["Valentin Ozeel <your.email@example.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/ValentinOzeel/Fall_Detection_App"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ultralytics = "^8.2.25"
+optuna = "^3.6"
+streamlit = "^1.30"
+opencv-python = "^4.10"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+flake8 = "^3.9.2"
+black = "^21.5b1"

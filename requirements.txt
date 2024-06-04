@@ -3,4 +3,3 @@ optuna
 streamlit 
 opencv-python
 pytorch
-timeit

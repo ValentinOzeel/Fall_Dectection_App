@@ -1,4 +1,4 @@
-path: "C:\\Users\\V.ozeel\\Documents\\Perso\\Coding\\Python\\Projects\\Fall_Detection_App\\data\\FallDetection.v4-resized640_aug3x-accurate.yolov8"
+path: "data\FallDetection.v4-resized640_aug3x-accurate.yolov8"
 train: "images\\train"
 val: "images\\val"
 test: "images\\test"

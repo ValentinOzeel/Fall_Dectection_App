@@ -25,21 +25,9 @@ YOLO:
     save_period: 0  # Save checkpoints every 5 epochs
     project: "runs\\detect\\training"  # Directory to save checkpoints
 
-
   VAL_PARAMS:
-#  batch: 16
-#  imgsz: 320
- #   conf: 0.1
- #   save_json: True
- #   plots: True
+    imgsz: 640
     device: 0
-
-  PREDICT_PARAMS: 
-    imgsz: 320
-    conf: 0.1
-    vid_stride: 1
-    device: 0
-
       
   OPTUNA_PARAMS:  
       ###### Model's hyperparameter tuning
@@ -72,16 +60,14 @@ YOLO:
 
   OPTUNA_FROZEN_PARAMS:
     verbose: False
-    epochs: 100
-    batch: 4
     imgsz: 640
+    epochs: 100
     patience: 20
+    batch: 4
     workers: 1
 
     optimizer: RAdam
     freeze: 7
-
-
 
     val: True
     plots: True

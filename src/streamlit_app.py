@@ -1,24 +1,31 @@
 import os
-import streamlit as st
+from datetime import datetime, timedelta
 import cv2
 import tempfile
 import numpy as np
+
+import streamlit as st
+
 from pytube import YouTube
 
 
 class FallDetectApp():
-    def __init__(self, model, fall_label=0, stream_detection_confidence=60, stream_frame_threshold=5):
+    def __init__(self, model, fall_label=0, confidence_threshold=0.62, stream_frame_threshold=(50, 100), minutes_bf_another_action=10):
         self.model = model
         self.fall_label = fall_label
+        self.confidence_threshold = confidence_threshold
         
-        self.stream_fall_frame_counter = 0
-        self.stream_detection_confidence = stream_detection_confidence
+
         self.stream_frame_threshold = stream_frame_threshold
+        self.stream_fall_frame_counter = [0 for i in range(self.stream_frame_threshold[1])]
+        self.action_performed = False
+        self.minutes_bf_another_action = minutes_bf_another_action
+        self.timer = None
         
         st.title("Human Fall Detection")
         st.write("This app detects human falls from multiple sources including streams.")
         # Option to select input source
-        self.input_source = st.radio("Select input source:", ('image', 'image_URL', 'video', 'YouTube', 'stream', 'multi_stream')).lower()
+        self.input_source = st.radio("Select input source:", ('image', 'image_URL', 'video', 'YouTube', 'stream')).lower()
         self._ask_inputs()
         
     def _ask_inputs(self):
@@ -47,17 +54,24 @@ class FallDetectApp():
         return self.model(frame) if not stream else self.model(frame, stream=True)
     
     def _stream_detection(self, cls, confidence):
+        # Remove last element and add current state (detection = 1 or no detection = 0)
+        self.stream_fall_frame_counter.pop()
+        self.stream_fall_frame_counter.insert(0, 1) if ((cls == self.fall_label) and (confidence > self.confidence_threshold)) else self.stream_fall_frame_counter.insert(0, 0)
         
-        if (cls == self.fall_label) and (confidence > self.stream_detection_confidence):
-            self.stream_fall_frame_counter += 1
+        if self.stream_fall_frame_counter.count(1) >= self.stream_frame_threshold[0]:  
             self._action_following_detection()
     
     def _action_following_detection(self):
-        if self.stream_fall_frame_counter > self.stream_detection_confidence:
-            print('DO YOUR ACTION')
-       # CALL / SEND MSG / MAIL ?
-        
-
+        if not self.action_performed:  
+            print('TRESHOLD REACHED: CARRY OUT YOUR ACTION')
+            # CALL / SEND MSG / MAIL ?
+            self.timer = datetime.now() + timedelta(minutes = self.minutes_bf_another_action)
+            self.action_performed = True 
+            
+        elif datetime.now() >= self.timer:
+            self.action_performed = False
+            self.timer = None
+            
 
     def _detection(self, frame, stream=False):
         # Perform inference on the frame
@@ -72,7 +86,7 @@ class FallDetectApp():
                 confidence = result.boxes.conf[0].item()
                 cls = result.boxes.cls[0].item()
 
-                if cls == self.fall_label:  
+                if cls == self.fall_label and confidence>=self.confidence_threshold:  
                     label = f'Fall_detected {confidence:.2f}'
                     cv2.rectangle(initial_frame_to_modify, (x1, y1), (x2, y2), (0, 0, 255), 2)
                     cv2.putText(initial_frame_to_modify, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
@@ -142,6 +156,9 @@ class FallDetectApp():
 
             video_capture = cv2.VideoCapture(tfile.name)
 
+            if not video_capture.isOpened():
+                st.error("Error: Could not open video. Please check the file and try again.")
+                
             stframe = st.empty()
 
             while video_capture.isOpened():
@@ -160,7 +177,7 @@ class FallDetectApp():
         
             
     def youtube_input(self, youtube_url):
-        try:
+        if youtube_url:
             yt = YouTube(youtube_url)
             stream = yt.streams.filter(file_extension='mp4').first()
             
@@ -185,6 +202,3 @@ class FallDetectApp():
             tfile.close()
             os.unlink(tfile.name)
             
-            
-        except Exception as e:
-            st.error(f"Error: {str(e)}")

@@ -6,7 +6,7 @@ from yolo_optuna import OptunaYoloHyperparamsFinetuning
              
 class YOLOFinetuning:
     def __init__(self, project_root_path:str, model_name:str, yolo_dataset_path:str, 
-                 train_parameters:Dict=None, val_parameters:Dict=None, predict_parameters:Dict=None):
+                 train_parameters:Dict=None, val_parameters:Dict=None):
         self.project_root_path = project_root_path
         self.model_name = model_name
         self.model = YOLO(model_name)
@@ -17,7 +17,6 @@ class YOLOFinetuning:
         
         self.train_parameters = train_parameters 
         self.val_parameters = val_parameters 
-        self.predict_parameters = predict_parameters
         
     def train(self, parameters:Dict=None):
         parameters = self.train_parameters if self.train_parameters else parameters
@@ -30,8 +29,6 @@ class YOLOFinetuning:
     def inference(self, frame, parameters:Dict, stream=False):
         parameters['stream'] = stream
         return self.model.predict(source=frame, **parameters)
-    
-    
         
     def hyperparameters_finetuning(self, experiment_name:str, optuna_hyperparameters:List[Tuple],
                                    frozen_hyperparameters:Dict=None,
