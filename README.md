@@ -31,7 +31,7 @@ https://python-poetry.org/docs/
 
 ## App tests
 
-[![Watch the video](https://github.com/ValentinOzeel/Fall_Dectection_App/blob/main/results/app_tests/yt_video_test_thumbnail.jpg)](https://github.com/ValentinOzeel/Fall_Dectection_App/blob/main/results/app_tests/yt_video_test.mp4)
+https://github.com/ValentinOzeel/Fall_Dectection_App/assets/117592568/4fc2b593-f7c0-4bbd-9123-ea01a9539df7
 
 
 ## Finetunning the model
