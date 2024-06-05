@@ -31,7 +31,7 @@ https://python-poetry.org/docs/
 
 ## App tests
 
-<video src='https://github.com/ValentinOzeel/Fall_Dectection_App/blob/main/results/app_tests/yt_video_test.mp4' width=180/>
+<video src='https://github.com/ValentinOzeel/Fall_Dectection_App/blob/main/results/app_tests/yt_video_test.mp4' width=180/></video>
 
 
 ## Finetunning the model
