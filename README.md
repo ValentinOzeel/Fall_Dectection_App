@@ -31,7 +31,7 @@ https://python-poetry.org/docs/
 
 ## App tests
 
-[![Watch the video](https://github.com/ValentinOzeel/Fall_Dectection_App/blob/main/results/app_tests/thumbnail.jpg)](https://github.com/ValentinOzeel/Fall_Dectection_App/blob/main/results/app_tests/yt_video_test.mp4)
+[![Watch the video](https://github.com/ValentinOzeel/Fall_Dectection_App/blob/main/results/app_tests/yt_video_test_thumbnail.jpg)](https://github.com/ValentinOzeel/Fall_Dectection_App/blob/main/results/app_tests/yt_video_test.mp4)
 
 
 ## Finetunning the model
@@ -48,6 +48,8 @@ WARNING: pytorch was not included as a dependency, please install pytorch (https
         python src/yolo_training.py
 
 ## Training roadmap
+
+Used dataset for training the model:  Fall Detection - v4 resized640_aug3x-ACCURATE (see data\FallDetection.v4-resized640_aug3x-accurate.yolov8\README.dataset.roboflow.txt)
 
 - Started with a dummy hyperparameter tuning run (optimizing mAP50 and mAP50-95) on a subset of the whole dataset (20%) to reduce computing time. Performed 300 trials with model training during a single epoch to narrow the initial range of parameter values.
 

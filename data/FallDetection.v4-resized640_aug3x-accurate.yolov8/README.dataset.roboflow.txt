@@ -1,5 +1,12 @@
+# Fall Detection > resized640_aug3x-ACCURATE
+https://universe.roboflow.com/roboflow-universe-projects/fall-detection-ca3o8
 
-Fall Detection - v4 resized640_aug3x-ACCURATE
+Provided by a Roboflow user
+License: CC BY 4.0
+
+* `Fall Detection` dataset images and annotations were cloned from the following projects:
+	* https://universe.roboflow.com/wuyujie/fall-7lbue
+
 ==============================
 
 This dataset was exported via roboflow.com on January 12, 2023 at 5:42 AM GMT
