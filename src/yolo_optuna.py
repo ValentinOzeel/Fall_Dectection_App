@@ -3,9 +3,9 @@ from typing import List, Tuple, Dict
 from timeit import default_timer as timer
 from ultralytics import YOLO
 import optuna
+
 from secondary_module import project_root_path, ConfigLoad, colorize, check_cuda_availability
-from yolo import YOLOFinetuning
-from streamlit_app import FallDetectApp
+
     
 
 class OptunaYoloHyperparamsFinetuning:
@@ -88,7 +88,7 @@ class OptunaYoloHyperparamsFinetuning:
 
 
 if __name__ == "__main__":
-    
+    from yolo import YOLOFinetuning
     check_cuda_availability()
     
     yolo_dataset_config_path = os.path.join(project_root_path, 'conf', 'YOLO_dataset.yaml') 
