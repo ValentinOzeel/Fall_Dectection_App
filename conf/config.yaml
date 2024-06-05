@@ -77,4 +77,5 @@ YOLO:
     project: "runs\\detect\\optuna"  # Directory to save checkpoints
 
 
-  
+  OPTUNA:
+    trials: 10

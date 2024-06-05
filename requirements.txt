@@ -1,5 +1,0 @@
-ultralytics
-optuna
-streamlit 
-opencv-python
-pytorch
